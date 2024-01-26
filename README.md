@@ -29,7 +29,10 @@ server.error.include-exception=true
 
 #server.error.include-stacktrace=always
 
+# How 2 run 
 
+-Maven clean
+-run as spring app
 # Link per collezioni postman
 ## Per auth
 https://elements.getpostman.com/redirect?entityId=32519712-89f9f680-33b8-47aa-b8ae-199b1794291f&entityType=collection
