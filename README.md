@@ -9,18 +9,24 @@
 Create /resource/application.properties with:
 
 spring.datasource.url=jdbc:postgresql://localhost:5432/steam
+
 spring.datasource.username=
+
 spring.datasource.password=
+
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 #This will create table automatically in your database
+
 spring.jpa.hibernate.ddl-auto=update
+
 spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true
 
 
-
 #error handling
+
 server.error.include-exception=true
+
 #server.error.include-stacktrace=always
 
 
