@@ -30,6 +30,7 @@ server.error.include-exception=true
 #server.error.include-stacktrace=always
 
 # How 2 run 
+-open demo as a project
 
 -Maven clean
 -run as spring app
