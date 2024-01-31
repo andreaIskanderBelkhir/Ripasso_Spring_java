@@ -51,4 +51,15 @@ public class User {
         this.friendOfList= new HashSet<FriendList>();
         this.hours=new HashSet<HourGame>();
     }
+
+    public User(long id, String name, String email, String phone,String psw) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.password=psw;
+        this.friendList= new HashSet<FriendList>();
+        this.friendOfList= new HashSet<FriendList>();
+        this.hours=new HashSet<HourGame>();
+    }
 }

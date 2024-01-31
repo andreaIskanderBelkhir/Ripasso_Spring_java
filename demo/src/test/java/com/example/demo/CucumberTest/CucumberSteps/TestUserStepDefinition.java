@@ -1,55 +1,70 @@
-package com.example.demo;
+package com.example.demo.CucumberTest.CucumberSteps;
 
-import ch.qos.logback.classic.spi.IThrowableProxy;
+import com.example.demo.CucumberTest.SpringIntegrationTest;
+import com.example.demo.CucumberTest.TestSecurityConfig;
+import com.example.demo.DemoApplication;
+import com.example.demo.Repository.UserRepository;
 import com.example.demo.Service.UserService;
 import com.example.demo.entita.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.glassfish.jaxb.runtime.v2.runtime.output.Encoded;
+import io.cucumber.spring.CucumberContextConfiguration;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcResultHandlersDsl;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 
 @SpringBootTest
+@CucumberContextConfiguration
 @AutoConfigureMockMvc
-public class TestUserCucumber {
+@ContextConfiguration(classes = {DemoApplication.class,TestSecurityConfig.class})
+//rinominare in testuserStepDefinition
+public class TestUserStepDefinition extends SpringIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private ObjectMapper objectMapper;
-    @InjectMocks
+    @MockBean
     private UserService userService;
+
     private ResultActions resultActions;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Given("a user with ID {long exists}")
-    public void givenUserExists(long userId){
-
-        User existUser=new User(userId,"John Doe", "john.doe@example.com",null);
-        existUser.setPassword(passwordEncoder.encode("test1"));
+    @Given("a user with ID {long} exists")
+    public void givenUserExists(Long userId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.isAuthenticated());
+        User existUser=new User( userId,"John Doe", "john.doe@example.com",null,passwordEncoder.encode("test1"));
         when(userService.getuserById(userId)).thenReturn(Optional.of(existUser));
     }
-    //funzione mappata su due when
-    @When("the client sends a POST to {string} with following JSON")
+
     @When("the client sends a POST request to {string} with the following JSON:")
     public void whenCliendSendsPostRequest(String url,String json) throws Exception{
         User newuser= objectMapper.readValue(json, User.class);
@@ -63,10 +78,11 @@ public class TestUserCucumber {
     @When("the client sends a PUT request to {string} with the following JSON:")
     public void whenClientSendsPutRequest(String url, String json) throws Exception {
         // Convert JSON string to User object
+        //long id= Long.parseLong(url.split("/")[2]);
         User updatedUser = objectMapper.readValue(json, User.class);
 
         // Mock the behavior of the service
-        when(userService.createUser(any(User.class))).thenReturn(updatedUser);
+        when(userService.updateUser(eq(updatedUser.getId()),any(User.class))).thenReturn(Optional.of(updatedUser));
 
         // Perform the PUT request
         resultActions = mockMvc.perform(MockMvcRequestBuilders.put(url)
@@ -74,11 +90,11 @@ public class TestUserCucumber {
                 .content(json));
     }
 
-    @Then("responce should be status code {int}")
+    @Then("the response status code should be {int}")
     public void thenResponseStatusCodeShouldBe(int expectedStatusCode) throws Exception{
         resultActions.andExpect(MockMvcResultMatchers.status().is(expectedStatusCode));
     }
-    @And("the responce JSON should contain:")
+    @And("the response JSON should contain:")
     public void andResponceJsoncontain(String expectedJson ) throws Exception{
         resultActions.andExpect(MockMvcResultMatchers.content().json(expectedJson));
     }
