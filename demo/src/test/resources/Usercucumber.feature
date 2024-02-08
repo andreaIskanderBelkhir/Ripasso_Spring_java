@@ -1,44 +1,23 @@
+
 Feature: User Management
 
   @WithAdminRole
-  Scenario: Create a new user
-    Given a user with ID 3 exists
-    When the client sends a POST request to "/user" with the following JSON:
-      """
-      {
-        "name": "Alice",
-        "email": "alice@example.com"
+  Scenario:Create new user and add to db
+    When creo utente con nome "alice" e email "alice@example.com"
+    Then utente "alice" è presente nel db
 
-      }
-      """
-    Then the response status code should be 200
-    And the response JSON should contain:
-      """
-      {
-        "id": 0,
-        "name": "Alice",
-        "email": "alice@example.com"
-
-      }
-      """
   @WithAdminRole
-  Scenario: Update an existing user
-    Given a user with ID 3 exists
-    When the client sends a PUT request to "/user/3" with the following JSON:
-      """
-      {
-        "id": 3,
-        "name": "Updated Alice",
-        "email": "updated.alice@example.com"
+  Scenario:Removed user from db
+    When creo utente con nome "alice" e email "alice@example.com"
+    Then utente "alice" è presente nel db
+    When rimuovo utente "alice" dal db
+    Then utente "alice" non è presente nel db
 
-      }
-      """
-    Then the response status code should be 200
-    And the response JSON should contain:
-      """
-      {
-        "id": 3,
-        "name": "Updated Alice",
-        "email": "updated.alice@example.com"
-      }
-      """
+  @WithAdminRole
+  Scenario:Update user from db
+    When creo utente con nome "alice" e email "alice@example.com"
+    Then utente "alice" è presente nel db
+    And utente "alice" ha email "alice@example.com"
+    When aggiorno email "alice2@example.it" ad "alice"
+    Then utente "alice" ha email "alice2@example.it"
+

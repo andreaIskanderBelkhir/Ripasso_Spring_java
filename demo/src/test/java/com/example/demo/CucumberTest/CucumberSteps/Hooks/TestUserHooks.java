@@ -1,4 +1,4 @@
-package com.example.demo.CucumberTest.Hooks;
+package com.example.demo.CucumberTest.CucumberSteps.Hooks;
 
 import io.cucumber.java.Before;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

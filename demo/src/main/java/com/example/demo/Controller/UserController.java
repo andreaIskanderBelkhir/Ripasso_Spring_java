@@ -7,6 +7,8 @@ import com.example.demo.entita.Game;
 import com.example.demo.entita.User;
 
 import org.hibernate.PropertyValueException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -32,21 +34,31 @@ public class UserController {
     private final HttpHeaders headers = new HttpHeaders();
     // Create a new user
 
-
+    private static final Logger logger= LoggerFactory.getLogger(UserController.class);
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user)  {
+
         try {
-            User useradd=userService.createUser(user);
-            if(useradd!=null){
-                return ResponseEntity.ok(userService.createUser(user));
-            }else{
-                return ResponseEntity.internalServerError().build();
+            boolean res=(userService.getuserById(user.getId()).isPresent())||
+                    (userService.getuserByNameOrEmail(user.getName()).isPresent())||
+                    (userService.getuserByNameOrEmail(user.getEmail()).isPresent());
+
+            if(!res){
+                User useradd=userService.createUser(user);
+                return ResponseEntity.ok(useradd);
             }
-        }catch (IllegalArgumentException e){
+            else{
+                return ResponseEntity.badRequest().build();
+            }
+        }
+        catch (IllegalArgumentException e){
             //System.out.println(e.getMessage());
+            logger.info("illegal ARGS");
             return ResponseEntity.internalServerError().body(null);
-        }catch (DataIntegrityViolationException a){
+        }
+        catch (DataIntegrityViolationException a){
+            logger.info("dataIntegrityViolation");
             return ResponseEntity.internalServerError().body(null);
         }
     }
@@ -66,11 +78,18 @@ public class UserController {
         return risposta;
     }
 
-    // Get user by ID
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        User user =userService.getuserById( (id)).orElseGet(()->null);
+    // Get user by a string o long
+    @GetMapping("/{string}")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<User> getUserByNameOrMail(@PathVariable String string) {
+        User user;
+        //String arg=string.split("/")[2];
+        if(string.matches("\\b\\d+\\b")){
+            user=userService.getuserById(Long.parseLong(string)).orElseGet(()->null);
+        }
+        else {
+            user = userService.getuserByNameOrEmail(string).orElseGet(() -> null);
+        }
         ResponseEntity<User> rep=null;
         headers.clear();
         if(user!=null){

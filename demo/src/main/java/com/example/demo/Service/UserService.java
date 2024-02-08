@@ -1,10 +1,14 @@
 package com.example.demo.Service;
 
+import com.example.demo.Controller.UserController;
 import com.example.demo.Repository.GameRepository;
 import com.example.demo.Repository.UserRepository;
 import com.example.demo.entita.FriendList;
 import com.example.demo.entita.Game;
 import com.example.demo.entita.User;
+import lombok.extern.flogger.Flogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,15 +29,13 @@ public class UserService {
     private GameService gameS;
     @Autowired
     private PasswordEncoder encoder;
+    private static final Logger logger= LoggerFactory.getLogger(UserService.class);
 
-
+    //TODO: creao 2 metodi uno per vedere se posso e uno per creare
     public User createUser(User user) {
-        if (!userR.findById(user.getId()).isPresent()) {
-            return null;
-        } else {
             user.setPassword(encoder.encode(user.getPassword()));
             return userR.save(user);
-        }
+
     }
 
 
@@ -48,6 +50,13 @@ public class UserService {
 
     public Optional<User> getuserById(long id) {
         return userR.findById(id);
+    }
+    public Optional<User> getuserByNameOrEmail(String name){
+            return userR.findByNameOrEmail(name,name);
+
+    }
+    public Optional<User> getuserByNameAndEmail(String name,String email){
+            return userR.findByNameAndEmail(name,email);
     }
 
     public Optional<User> updateUser(Long id, User userDetails) {
