@@ -52,7 +52,7 @@ import static org.junit.Assert.assertNotNull;
 //TODO: creare classe per chiamate http
 public class UserManager {
     private static final Logger logger= LoggerFactory.getLogger(UserManager.class);
-
+    private static final HttpManager httpManager=new HttpManager();
 
     //TODO: provare autowired per accedere a vedo db
     @Autowired
@@ -78,13 +78,8 @@ public class UserManager {
 
     public User getUser(String value) throws Exception {
 
-
         String url=userUrl.concat("/"+value);
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-
-        HttpGet httpGet = new HttpGet(url);
-        httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + "stuff");
-        response=httpClient.execute(httpGet);
+        response=httpManager.httpGet(url);
 
         if(response.getEntity()!=null) {
             HttpEntity userEntity = response.getEntity();
@@ -104,18 +99,7 @@ public class UserManager {
 
         String requestBody = createUserAddOn(nome, email);
 
-//        Response response= RestAssured.given().contentType(ContentType.JSON).body(requestBody)
-//                .redirects().follow(true)
-//                        .when().redirects().follow(true)
-//                                .post("/user")
-//                ;
-
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost(userUrl);
-        httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + "stuff");
-        httpPost.setHeader("Content-Type", "application/json");
-        httpPost.setEntity(new StringEntity(requestBody));
-        response = httpClient.execute(httpPost);
+        response = httpManager.httpPost(userUrl,requestBody);
         int status= response.getStatusLine().getStatusCode();
 
         switch (status){
@@ -141,14 +125,8 @@ public class UserManager {
         user.setEmail(email);
         String url=userUrl.concat("/"+String.valueOf(id));
         String requestBody=createUserAddOn(user);
-
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPut httpPut = new HttpPut(url);
-        httpPut.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + "stuff");
-        httpPut.setHeader("Content-Type", "application/json");
-        httpPut.setEntity(new StringEntity(requestBody));
         logger.info("user modified");
-        response = httpClient.execute(httpPut);
+        response = httpManager.httpPut(url,requestBody);
         int status=response.getStatusLine().getStatusCode();
         switch (status) {
             case 200:
@@ -165,12 +143,8 @@ public class UserManager {
 
     public boolean deleteUser(String name) throws Exception {
         long id = userService.getuserByNameOrEmail(name).get().getId();
-
         String url =userUrl.concat("/"+String.valueOf(id));
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpDelete httpDelete = new HttpDelete(url);
-        httpDelete.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + "stuff");
-        response = httpClient.execute(httpDelete);
+        response = httpManager.httpDelete(url);
         int status=response.getStatusLine().getStatusCode();
         switch (status) {
             case 200:
