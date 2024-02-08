@@ -1,68 +1,40 @@
 package com.example.demo.CucumberTest.CucumberSteps;
 
-import com.example.demo.CucumberTest.TestSecurityConfig;
-import com.example.demo.DemoApplication;
+
 import com.example.demo.Service.UserService;
 import com.example.demo.entita.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import io.cucumber.spring.CucumberContextConfiguration;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.*;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+
 import org.apache.http.util.EntityUtils;
-import org.junit.Before;
-import org.junit.Test;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
-import java.util.Base64;
-import java.util.Optional;
-
-
-import static io.restassured.RestAssured.given;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-@SpringBootTest
-//TODO: creare classe per chiamate http
+
+@RequiredArgsConstructor
+@Service // service perche ha al suo intero logica e provvede a dei servizzi
 public class UserManager {
     private static final Logger logger= LoggerFactory.getLogger(UserManager.class);
     private static final HttpManager httpManager=new HttpManager();
 
-    //TODO: provare autowired per accedere a vedo db
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     String userUrl = "http://localhost:8080/user";
 
     private CloseableHttpResponse response;
 
-    private String authToken;
+
+/*    private String authToken;
 
     @Before
     public void setUp() {
@@ -71,10 +43,9 @@ public class UserManager {
         String password = "a";
         String credentials = username + ":" + password;
         authToken = Base64.getEncoder().encodeToString(credentials.getBytes());
-    }
+    }*/
 
-    //TODO: usare switch per controllo type DONE
-    //TODO:
+
 
     public User getUser(String value) throws Exception {
 
