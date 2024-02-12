@@ -1,19 +1,19 @@
 
 Feature: User Management
 
-  @WithAdminRole
+  #@WithAdminRole
   Scenario:Create new user and add to db
     When creo utente con nome "alice" e email "alice@example.com"
     Then utente "alice" è presente nel db
 
-  @WithAdminRole
+  #@WithAdminRole
   Scenario:Removed user from db
     When creo utente con nome "alice" e email "alice@example.com"
     Then utente "alice" è presente nel db
     When rimuovo utente "alice" dal db
     Then utente "alice" non è presente nel db
 
-  @WithAdminRole
+  #@WithAdminRole
   Scenario:Update user from db
     When creo utente con nome "alice" e email "alice@example.com"
     Then utente "alice" è presente nel db

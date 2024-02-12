@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RequiredArgsConstructor
-@Service // service perche ha al suo intero logica e provvede a dei servizzi
+@Service // service perche ha al suo intero logica e provvede a dei servizi
 public class UserManager {
     private static final Logger logger= LoggerFactory.getLogger(UserManager.class);
     private static final HttpManager httpManager=new HttpManager();
@@ -53,8 +53,7 @@ public class UserManager {
         response=httpManager.httpGet(url);
 
         if(response.getEntity()!=null) {
-            HttpEntity userEntity = response.getEntity();
-            String userjson = EntityUtils.toString(userEntity);
+            String userjson = httpManager.httpGetResponseBodyasJson(response);
 
             //check if no content http status, thtas mean get ha dato utente null
             User userfound = new ObjectMapper().readValue(userjson, User.class);
@@ -71,7 +70,7 @@ public class UserManager {
         String requestBody = createUserAddOn(nome, email);
 
         response = httpManager.httpPost(userUrl,requestBody);
-        int status= response.getStatusLine().getStatusCode();
+        int status= httpManager.httpGetResponseCode(response);
 
         switch (status){
             case 200:
@@ -98,7 +97,7 @@ public class UserManager {
         String requestBody=createUserAddOn(user);
         logger.info("user modified");
         response = httpManager.httpPut(url,requestBody);
-        int status=response.getStatusLine().getStatusCode();
+        int status=httpManager.httpGetResponseCode(response);
         switch (status) {
             case 200:
 
@@ -116,7 +115,7 @@ public class UserManager {
         long id = userService.getuserByNameOrEmail(name).get().getId();
         String url =userUrl.concat("/"+String.valueOf(id));
         response = httpManager.httpDelete(url);
-        int status=response.getStatusLine().getStatusCode();
+        int status=httpManager.httpGetResponseCode(response);
         switch (status) {
             case 200:
                 return true;
@@ -127,17 +126,17 @@ public class UserManager {
     }
 
 
-    //TODO: aggiungere controllo su found se null
+
     public void userFound(String name) {
         try {
             User found = getUser(name);
             if(found!=null) {
                 ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
                 String json = ow.writeValueAsString(found);
-                //TODO:chiedere qui
+
                 assertEquals(name,found.getName());
                 assertNotNull(response.getEntity());
-                assertEquals(200,response.getStatusLine().getStatusCode());
+                assertEquals(200,httpManager.httpGetResponseCode(response));
 
             }
             else logger.info("not found");
@@ -151,7 +150,7 @@ public class UserManager {
             User found = getUser(name);
             if(found==null){
 
-                assertEquals(204,response.getStatusLine().getStatusCode());
+                assertEquals(204,httpManager.httpGetResponseCode(response));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -164,7 +163,7 @@ public class UserManager {
             String emailget= found.getEmail();
 
             if(emailget.equals(email)){
-                assertEquals(200,response.getStatusLine().getStatusCode());
+                assertEquals(200,httpManager.httpGetResponseCode(response));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

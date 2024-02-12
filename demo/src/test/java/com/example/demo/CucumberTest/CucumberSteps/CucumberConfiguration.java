@@ -7,6 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @CucumberContextConfiguration
 @SpringBootTest(classes = DemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+//TODO: creare cartella test runner in cucumberTest con questo e test runner. nomi cartelle minusculi
 public class CucumberConfiguration {
-
 }

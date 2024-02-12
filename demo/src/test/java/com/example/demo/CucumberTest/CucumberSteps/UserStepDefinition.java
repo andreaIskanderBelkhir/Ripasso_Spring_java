@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
-///TODO:non deve estender deve essere classe apparte
+
 @SpringBootTest
-@AllArgsConstructor //forza i costruttoti non null
+@AllArgsConstructor //forza i costruttoti non null quindi fa injection  per service e con notnull si assicura che non ci sia null nel manager
 public class UserStepDefinition  {
 @Autowired
 private UserService userService;

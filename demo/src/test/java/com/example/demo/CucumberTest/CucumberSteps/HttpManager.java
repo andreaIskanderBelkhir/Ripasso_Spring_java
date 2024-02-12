@@ -1,5 +1,6 @@
 package com.example.demo.CucumberTest.CucumberSteps;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -8,7 +9,8 @@ import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
+//TODO: metodi per leggere/PARSING DEI RISULATI DELLA RISPosta(eg. get result code, get entity to string)
+//TODO:
 public class HttpManager {
 
     //non si puo usare generico va creato per ogni chiamata
@@ -58,4 +60,15 @@ public class HttpManager {
         return response;
     }
 
+    public int httpGetResponseCode(CloseableHttpResponse response){
+        int code = response.getStatusLine().getStatusCode();
+        return code;
+    }
+
+    public String  httpGetResponseBodyasJson(CloseableHttpResponse response){
+        HttpEntity entity = response.getEntity();
+        String json=entity.toString();
+        return json;
+
+    }
 }
