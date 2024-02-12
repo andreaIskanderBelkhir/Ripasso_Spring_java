@@ -1,6 +1,7 @@
-package com.example.demo.CucumberTest.CucumberSteps;
+package com.example.demo.cucumberTest.stepDefinition;
 
 import com.example.demo.Service.UserService;
+import com.example.demo.cucumberTest.manager.UserManager;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class UserStepDefinition  {
 @Autowired
 private UserService userService;
 
-private final  UserManager userManager;
+private final UserManager userManager;
 
     private static final Logger logger= LoggerFactory.getLogger(UserStepDefinition.class);
 

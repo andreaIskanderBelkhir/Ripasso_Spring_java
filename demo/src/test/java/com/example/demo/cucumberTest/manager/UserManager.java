@@ -1,20 +1,15 @@
-package com.example.demo.CucumberTest.CucumberSteps;
+package com.example.demo.cucumberTest.manager;
 
 
 import com.example.demo.Service.UserService;
 import com.example.demo.entita.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.*;
-
-import org.apache.http.util.EntityUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 

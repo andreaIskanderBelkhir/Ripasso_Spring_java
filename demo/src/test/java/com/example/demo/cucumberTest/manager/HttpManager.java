@@ -1,14 +1,15 @@
-package com.example.demo.CucumberTest.CucumberSteps;
+package com.example.demo.cucumberTest.manager;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+
 //TODO: metodi per leggere/PARSING DEI RISULATI DELLA RISPosta(eg. get result code, get entity to string)
 //TODO:
 public class HttpManager {
@@ -65,9 +66,9 @@ public class HttpManager {
         return code;
     }
 
-    public String  httpGetResponseBodyasJson(CloseableHttpResponse response){
+    public String  httpGetResponseBodyasJson(CloseableHttpResponse response) throws IOException {
         HttpEntity entity = response.getEntity();
-        String json=entity.toString();
+        String json= EntityUtils.toString(entity);
         return json;
 
     }
