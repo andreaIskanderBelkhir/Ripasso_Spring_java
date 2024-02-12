@@ -5,9 +5,13 @@ import com.example.demo.Service.UserService;
 import com.example.demo.entita.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.client.methods.*;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -21,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 public class UserManager {
     private static final Logger logger= LoggerFactory.getLogger(UserManager.class);
     private static final HttpManager httpManager=new HttpManager();
-
+    private static final Gson gson = new GsonBuilder().create();
     private final UserService userService;
 
     String userUrl = "http://localhost:8080/user";
@@ -48,10 +52,11 @@ public class UserManager {
         response=httpManager.httpGet(url);
 
         if(response.getEntity()!=null) {
-            String userjson = httpManager.httpGetResponseBodyasJson(response);
+            JSONObject userjson = httpManager.httpGetResponseBodyasJson(response);
 
             //check if no content http status, thtas mean get ha dato utente null
-            User userfound = new ObjectMapper().readValue(userjson, User.class);
+            User  userfound=gson.fromJson(userjson.toString(), User.class);
+            //User userfound = new ObjectMapper().readValue(userjson.toString(), User.class);
             return userfound;
         }
         else{
@@ -62,7 +67,7 @@ public class UserManager {
 
     public boolean saveUser(String nome, String email) throws Exception{
 
-        String requestBody = createUserAddOn(nome, email);
+        JSONObject requestBody = createUserAddOn(nome, email);
 
         response = httpManager.httpPost(userUrl,requestBody);
         int status= httpManager.httpGetResponseCode(response);
@@ -89,7 +94,7 @@ public class UserManager {
         long id=user.getId();
         user.setEmail(email);
         String url=userUrl.concat("/"+String.valueOf(id));
-        String requestBody=createUserAddOn(user);
+        JSONObject requestBody=createUserAddOn(user);
         logger.info("user modified");
         response = httpManager.httpPut(url,requestBody);
         int status=httpManager.httpGetResponseCode(response);
@@ -126,8 +131,6 @@ public class UserManager {
         try {
             User found = getUser(name);
             if(found!=null) {
-                ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                String json = ow.writeValueAsString(found);
 
                 assertEquals(name,found.getName());
                 assertNotNull(response.getEntity());
@@ -165,22 +168,35 @@ public class UserManager {
         }
     }
 
-    public String createUserAddOn(String nome,String email){
+    public JSONObject createUserAddOn(String nome,String email) throws JSONException {
         String pswd="test1";
         String role="ROLE_UTENTE";
-        String res= "{ \"name\": \"" + nome + "\"" +
+        JSONObject res= new JSONObject();
+/*        String res= "{ \"name\": \"" + nome + "\"" +
                 ", \"email\": \"" + email + "\"" +
                 ", \"phone\": \"" + null + "\"" +
                 ", \"password\": \""+pswd+"\"" +
-                ", \"role\" :\""+role+"\"}";
+                ", \"role\" :\""+role+"\"}";*/
+        res.put("name",nome);
+        res.put("email",email);
+        res.put("phone",null);
+        res.put("password",pswd);
+        res.put("role",role);
+
         return res;
     }
-    private String createUserAddOn(User user) {
-        String res = "{\"name\": \"" + user.getName() + "\"" +
+    public JSONObject createUserAddOn(User user) throws JSONException {
+ /*       String res = "{\"name\": \"" + user.getName() + "\"" +
                 ", \"email\": \"" + user.getEmail() + "\"" +
                 ", \"phone\": \"" + user.getPhone() + "\"" +
                 ", \"password\": \""+user.getPassword()+"\"" +
-                ", \"role\" :\""+user.getRole()+"\"}";
+                ", \"role\" :\""+user.getRole()+"\"}";*/
+        JSONObject res =new JSONObject();
+        res.put("name",user.getName());
+        res.put("email",user.getEmail());
+        res.put("phone",user.getPhone());
+        res.put("password",user.getPassword());
+        res.put("role",user.getRole());
         return res;
     }
 }

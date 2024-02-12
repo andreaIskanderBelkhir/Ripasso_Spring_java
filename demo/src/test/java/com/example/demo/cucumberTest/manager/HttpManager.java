@@ -6,6 +6,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
@@ -34,19 +36,21 @@ public class HttpManager {
         return response;
     }
 
-    public CloseableHttpResponse httpPost(String url,String requestBody) throws IOException {
+    public CloseableHttpResponse httpPost(String url, JSONObject requestBodyJson) throws IOException {
         CloseableHttpClient httpClient = createConnection();
         HttpPost httpPost = new HttpPost(url);
         setAuth(httpPost);
         httpPost.setHeader("Content-Type", "application/json");
+        String requestBody=requestBodyJson.toString();
         httpPost.setEntity(new StringEntity(requestBody));
         CloseableHttpResponse response = httpClient.execute(httpPost);
         return response;
     }
-    public CloseableHttpResponse httpPut(String url,String requestBody) throws IOException {
+    public CloseableHttpResponse httpPut(String url,JSONObject requestBodyJson) throws IOException {
         CloseableHttpClient httpClient = createConnection();
         HttpPut httpPut = new HttpPut(url);
         setAuth(httpPut);
+        String requestBody=requestBodyJson.toString();
         httpPut.setHeader("Content-Type", "application/json");
         httpPut.setEntity(new StringEntity(requestBody));
         CloseableHttpResponse response = httpClient.execute(httpPut);
@@ -66,9 +70,10 @@ public class HttpManager {
         return code;
     }
 
-    public String  httpGetResponseBodyasJson(CloseableHttpResponse response) throws IOException {
+    public JSONObject  httpGetResponseBodyasJson(CloseableHttpResponse response) throws IOException, JSONException {
         HttpEntity entity = response.getEntity();
-        String json= EntityUtils.toString(entity);
+        String string= EntityUtils.toString(entity);
+        JSONObject json=new JSONObject(string);
         return json;
 
     }
