@@ -40,7 +40,7 @@ private final UserManager userManager;
                 logger.info("error in the process of saving the user");
             }
         } catch (Exception e) { // modificare per capire meglio errore eg. stampare almeno log
-            logger.info("exeption found : "+e.getMessage());
+            logger.info("exeption found : " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -59,7 +59,7 @@ private final UserManager userManager;
                 logger.info("error in the process of updating the user");
             }
         }catch (Exception e){
-            logger.info("exeption found : "+e.getMessage());
+            logger.info("exeption found : " + e.getMessage());
             throw  new RuntimeException(e);
         }
     }

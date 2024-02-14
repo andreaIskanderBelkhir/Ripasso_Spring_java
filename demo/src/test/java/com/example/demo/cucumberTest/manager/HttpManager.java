@@ -30,27 +30,27 @@ public class HttpManager {
 
     public CloseableHttpResponse httpGet(String url) throws IOException {
         CloseableHttpClient httpClient = createConnection();
-        HttpGet httpGet = new HttpGet(url);
+        HttpGet httpGet                = new HttpGet(url);
         setAuth(httpGet);
-        CloseableHttpResponse response=httpClient.execute(httpGet);
+        CloseableHttpResponse response = httpClient.execute(httpGet);
         return response;
     }
 
     public CloseableHttpResponse httpPost(String url, JSONObject requestBodyJson) throws IOException {
         CloseableHttpClient httpClient = createConnection();
-        HttpPost httpPost = new HttpPost(url);
+        HttpPost httpPost              = new HttpPost(url);
         setAuth(httpPost);
         httpPost.setHeader("Content-Type", "application/json");
-        String requestBody=requestBodyJson.toString();
+        String requestBody             = requestBodyJson.toString();
         httpPost.setEntity(new StringEntity(requestBody));
         CloseableHttpResponse response = httpClient.execute(httpPost);
         return response;
     }
     public CloseableHttpResponse httpPut(String url,JSONObject requestBodyJson) throws IOException {
         CloseableHttpClient httpClient = createConnection();
-        HttpPut httpPut = new HttpPut(url);
+        HttpPut httpPut                = new HttpPut(url);
         setAuth(httpPut);
-        String requestBody=requestBodyJson.toString();
+        String requestBody             = requestBodyJson.toString();
         httpPut.setHeader("Content-Type", "application/json");
         httpPut.setEntity(new StringEntity(requestBody));
         CloseableHttpResponse response = httpClient.execute(httpPut);
@@ -59,7 +59,7 @@ public class HttpManager {
 
     public CloseableHttpResponse httpDelete(String url) throws IOException {
         CloseableHttpClient httpClient = createConnection();
-        HttpDelete httpDelete = new HttpDelete(url);
+        HttpDelete httpDelete          = new HttpDelete(url);
         setAuth(httpDelete);
         CloseableHttpResponse response = httpClient.execute(httpDelete);
         return response;
@@ -73,7 +73,7 @@ public class HttpManager {
     public JSONObject  httpGetResponseBodyasJson(CloseableHttpResponse response) throws IOException, JSONException {
         HttpEntity entity = response.getEntity();
         String string= EntityUtils.toString(entity);
-        JSONObject json=new JSONObject(string);
+        JSONObject json   = new JSONObject(string);
         return json;
 
     }

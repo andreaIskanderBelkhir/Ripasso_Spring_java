@@ -23,12 +23,12 @@ import static org.junit.Assert.assertNotNull;
 @RequiredArgsConstructor
 @Service // service perche ha al suo intero logica e provvede a dei servizi
 public class UserManager {
-    private static final Logger logger= LoggerFactory.getLogger(UserManager.class);
-    private static final HttpManager httpManager=new HttpManager();
-    private static final Gson gson = new GsonBuilder().create();
+    private static final Logger logger           = LoggerFactory.getLogger(UserManager.class);
+    private static final HttpManager httpManager = new HttpManager();
+    private static final Gson gson               = new GsonBuilder().create();
     private final UserService userService;
 
-    String userUrl = "http://localhost:8080/user";
+    String userUrl                               = "http://localhost:8080/user";
 
     private CloseableHttpResponse response;
 
@@ -47,15 +47,13 @@ public class UserManager {
 
 
     public User getUser(String value) throws Exception {
+        String url              = userUrl.concat("/"+value);
+        response                = httpManager.httpGet(url);
 
-        String url=userUrl.concat("/"+value);
-        response=httpManager.httpGet(url);
-
-        if(response.getEntity()!=null) {
+        if(response.getEntity() != null) {
             JSONObject userjson = httpManager.httpGetResponseBodyasJson(response);
-
             //check if no content http status, thtas mean get ha dato utente null
-            User  userfound=gson.fromJson(userjson.toString(), User.class);
+            User  userfound     = gson.fromJson(userjson.toString(), User.class);
             //User userfound = new ObjectMapper().readValue(userjson.toString(), User.class);
             return userfound;
         }
@@ -66,15 +64,12 @@ public class UserManager {
     }
 
     public boolean saveUser(String nome, String email) throws Exception{
-
         JSONObject requestBody = createUserAddOn(nome, email);
-
-        response = httpManager.httpPost(userUrl,requestBody);
-        int status= httpManager.httpGetResponseCode(response);
+        response               = httpManager.httpPost(userUrl,requestBody);
+        int status             = httpManager.httpGetResponseCode(response);
 
         switch (status){
             case 200:
-
                 return true;
 
             case 400:
@@ -82,25 +77,23 @@ public class UserManager {
                 return false;
 
             default:
-                logger.info("altro problema status: "+String.valueOf(status));
+                logger.info("altro problema status: " + String.valueOf(status));
                 return false;
-
         }
     }
 
 
     public boolean updateEmailUser(String name,String email) throws  Exception{
-        User user=userService.getuserByNameOrEmail(name).get();
-        long id=user.getId();
+        User user               = userService.getuserByNameOrEmail(name).get();
+        long id                 = user.getId();
         user.setEmail(email);
-        String url=userUrl.concat("/"+String.valueOf(id));
-        JSONObject requestBody=createUserAddOn(user);
+        String url              = userUrl.concat("/" + String.valueOf(id));
+        JSONObject requestBody  = createUserAddOn(user);
         logger.info("user modified");
-        response = httpManager.httpPut(url,requestBody);
-        int status=httpManager.httpGetResponseCode(response);
+        response                = httpManager.httpPut(url,requestBody);
+        int status              = httpManager.httpGetResponseCode(response);
         switch (status) {
             case 200:
-
                 return true;
 
             default:
@@ -112,10 +105,10 @@ public class UserManager {
 
 
     public boolean deleteUser(String name) throws Exception {
-        long id = userService.getuserByNameOrEmail(name).get().getId();
-        String url =userUrl.concat("/"+String.valueOf(id));
-        response = httpManager.httpDelete(url);
-        int status=httpManager.httpGetResponseCode(response);
+        long id    = userService.getuserByNameOrEmail(name).get().getId();
+        String url = userUrl.concat("/" + String.valueOf(id));
+        response   = httpManager.httpDelete(url);
+        int status = httpManager.httpGetResponseCode(response);
         switch (status) {
             case 200:
                 return true;
@@ -130,24 +123,23 @@ public class UserManager {
     public void userFound(String name) {
         try {
             User found = getUser(name);
-            if(found!=null) {
-
+            if(found   != null) {
                 assertEquals(name,found.getName());
                 assertNotNull(response.getEntity());
                 assertEquals(200,httpManager.httpGetResponseCode(response));
-
             }
-            else logger.info("not found");
+            else
+            {
+                logger.info("not found");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
     public void userNotFound(String name)  {
-
         try {
             User found = getUser(name);
             if(found==null){
-
                 assertEquals(204,httpManager.httpGetResponseCode(response));
             }
         } catch (Exception e) {
@@ -155,10 +147,9 @@ public class UserManager {
         }
     }
     public void checkOnEmail(String name,String email){
-
         try {
-            User found = getUser(name);
-            String emailget= found.getEmail();
+            User found      = getUser(name);
+            String emailget = found.getEmail();
 
             if(emailget.equals(email)){
                 assertEquals(200,httpManager.httpGetResponseCode(response));
@@ -169,9 +160,9 @@ public class UserManager {
     }
 
     public JSONObject createUserAddOn(String nome,String email) throws JSONException {
-        String pswd="test1";
-        String role="ROLE_UTENTE";
-        JSONObject res= new JSONObject();
+        String pswd    = "test1";
+        String role    = "ROLE_UTENTE";
+        JSONObject res = new JSONObject();
 /*        String res= "{ \"name\": \"" + nome + "\"" +
                 ", \"email\": \"" + email + "\"" +
                 ", \"phone\": \"" + null + "\"" +
@@ -182,7 +173,6 @@ public class UserManager {
         res.put("phone",null);
         res.put("password",pswd);
         res.put("role",role);
-
         return res;
     }
     public JSONObject createUserAddOn(User user) throws JSONException {
@@ -191,7 +181,7 @@ public class UserManager {
                 ", \"phone\": \"" + user.getPhone() + "\"" +
                 ", \"password\": \""+user.getPassword()+"\"" +
                 ", \"role\" :\""+user.getRole()+"\"}";*/
-        JSONObject res =new JSONObject();
+        JSONObject res = new JSONObject();
         res.put("name",user.getName());
         res.put("email",user.getEmail());
         res.put("phone",user.getPhone());
