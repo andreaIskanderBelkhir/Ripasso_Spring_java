@@ -1,15 +1,12 @@
-package com.example.demo.Service;
+package com.example.demo.service;
 
-import com.example.demo.Repository.HoursRepository;
-import com.example.demo.entita.*;
-import netscape.javascript.JSObject;
+import com.example.demo.repository.HoursRepository;
+import com.example.demo.entity.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class HoursService {

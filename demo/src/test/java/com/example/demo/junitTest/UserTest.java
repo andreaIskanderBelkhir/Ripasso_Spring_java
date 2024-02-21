@@ -1,8 +1,8 @@
 package com.example.demo.junitTest;
 
 
-import com.example.demo.Service.UserService;
-import com.example.demo.entita.User;
+import com.example.demo.service.UserService;
+import com.example.demo.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 // Assuming your User class is in a package named "user"
 import org.junit.Test;

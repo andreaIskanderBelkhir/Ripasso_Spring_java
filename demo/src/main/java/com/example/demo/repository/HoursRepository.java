@@ -1,8 +1,8 @@
-package com.example.demo.Repository;
+package com.example.demo.repository;
 
-import com.example.demo.entita.HourGame;
-import com.example.demo.entita.Library;
-import com.example.demo.entita.Hourssumm;
+import com.example.demo.entity.HourGame;
+import com.example.demo.entity.Library;
+import com.example.demo.entity.Hourssumm;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

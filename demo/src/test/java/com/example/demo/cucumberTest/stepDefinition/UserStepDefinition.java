@@ -1,6 +1,6 @@
 package com.example.demo.cucumberTest.stepDefinition;
 
-import com.example.demo.Service.UserService;
+import com.example.demo.service.UserService;
 import com.example.demo.cucumberTest.manager.UserManager;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;

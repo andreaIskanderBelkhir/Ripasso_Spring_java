@@ -1,24 +1,16 @@
-package com.example.demo.Service;
+package com.example.demo.service;
 
-import com.example.demo.Controller.UserController;
-import com.example.demo.Repository.GameRepository;
-import com.example.demo.Repository.UserRepository;
-import com.example.demo.entita.FriendList;
-import com.example.demo.entita.Game;
-import com.example.demo.entita.User;
-import lombok.extern.flogger.Flogger;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.entity.FriendList;
+import com.example.demo.entity.Game;
+import com.example.demo.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -34,6 +26,7 @@ public class UserService {
     //TODO: creao 2 metodi uno per vedere se posso e uno per creare
     public User createUser(User user) {
             user.setPassword(encoder.encode(user.getPassword()));
+            user.setRole("ROLE_USER");
             return userR.save(user);
 
     }

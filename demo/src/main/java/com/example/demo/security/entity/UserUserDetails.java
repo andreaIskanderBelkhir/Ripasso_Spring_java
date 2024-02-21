@@ -1,7 +1,6 @@
-package com.example.demo.Security.entity;
+package com.example.demo.security.entity;
 
-import com.example.demo.entita.User;
-import jakarta.persistence.Column;
+import com.example.demo.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

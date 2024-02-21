@@ -1,10 +1,8 @@
 package com.example.demo.cucumberTest.manager;
 
 
-import com.example.demo.Service.UserService;
-import com.example.demo.entita.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.example.demo.service.UserService;
+import com.example.demo.entity.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RequiredArgsConstructor
-@Service // service perche ha al suo intero logica e provvede a dei servizi
+@Service // service perche ha al suo intero logica e pro vvede a dei servizi
 public class UserManager {
     private static final Logger logger           = LoggerFactory.getLogger(UserManager.class);
     private static final HttpManager httpManager = new HttpManager();
