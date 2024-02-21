@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
+import com.example.demo.repository.UserReadOnlyRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.entity.FriendList;
 import com.example.demo.entity.Game;
 import com.example.demo.entity.User;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +15,16 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userR;
-    @Autowired
-    private GameService gameS;
-    @Autowired
-    private PasswordEncoder encoder;
+    private final UserRepository userR;
+
+    private final GameService gameS;
+
+    private final PasswordEncoder encoder;
+
+    private final UserReadOnlyRepository userReadOnlyRepository;
     private static final Logger logger= LoggerFactory.getLogger(UserService.class);
 
     //TODO: creao 2 metodi uno per vedere se posso e uno per creare
@@ -33,7 +37,7 @@ public class UserService {
 
 
     public Optional<ArrayList<User>> getallUser() {
-        ArrayList<User> list= (ArrayList<User>) userR.findAll();
+        ArrayList<User> list= (ArrayList<User>) userReadOnlyRepository.findAll();
         if(list.isEmpty()){
             return Optional.empty();
         }
@@ -45,15 +49,15 @@ public class UserService {
         return userR.findById(id);
     }
     public Optional<User> getuserByNameOrEmail(String name){
-            return userR.findByNameOrEmail(name,name);
+            return userReadOnlyRepository.findByNameOrEmail(name,name);
 
     }
     public Optional<User> getuserByNameAndEmail(String name,String email){
-            return userR.findByNameAndEmail(name,email);
+            return userReadOnlyRepository.findByNameAndEmail(name,email);
     }
 
     public Optional<User> updateUser(Long id, User userDetails) {
-        Optional<User> user = userR.findById(id);
+        Optional<User> user = userReadOnlyRepository.findById(id);
         if (user.isPresent()) {
             User existingUser = user.get();
             existingUser.setName(userDetails.getName());
@@ -64,8 +68,8 @@ public class UserService {
     }
 
     public Set<FriendList> getfriends(Long id){
-        if(userR.findById(id).isPresent()){
-            Set<FriendList> friends=userR.findById(id).get().getFriendList();
+        if(userReadOnlyRepository .findById(id).isPresent()){
+            Set<FriendList> friends=userReadOnlyRepository.findById(id).get().getFriendList();
             return friends;
         }
         else
