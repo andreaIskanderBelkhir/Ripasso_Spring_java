@@ -45,15 +45,28 @@ public class UserController {
     public ResponseEntity<CreateUserResponseDTO> createUser(@RequestBody CreateUserRequestDTO userRequestDTO) {
 
         try {
-            boolean res = (userService.getuserById(userRequestDTO.getId()).isPresent()) ||
-                    (userService.getuserByNameOrEmail(userRequestDTO.getName()).isPresent()) ||
-                    (userService.getuserByNameOrEmail(userRequestDTO.getEmail()).isPresent());
+            userRequestDTO.isValid();
+            boolean presId    = userService.getuserById(userRequestDTO.getId()).isPresent();
+            boolean presName  = userService.getuserByNameOrEmail(userRequestDTO.getName()).isPresent();
+            boolean presEmail = userService.getuserByNameOrEmail(userRequestDTO.getEmail()).isPresent();
+            boolean res = presId   ||
+                          presName ||
+                          presEmail;
 
             if (!res) {
                 User useradd = userService.createUser(UserMapper.mapper(userRequestDTO));
                 CreateUserResponseDTO userResponseDTO=UserMapper.mapperToCreate(useradd);
                 return ResponseEntity.ok(userResponseDTO);
             } else {
+                if(presId){
+                    logger.warn("id gia presente");
+                }
+                if(presName){
+                    logger.warn("nome gia presente");
+                }
+                if(presEmail){
+                    logger.warn("email gia presente");
+                }
                 return ResponseEntity.badRequest().build();
             }
         } catch (IllegalArgumentException e) {
@@ -61,6 +74,7 @@ public class UserController {
             return ResponseEntity.internalServerError().body(null);
         } catch (DataIntegrityViolationException a) {
             logger.info("dataIntegrityViolation");
+            logger.warn(a.getMessage());
             return ResponseEntity.internalServerError().body(null);
         }
     }

@@ -1,6 +1,7 @@
 package com.example.demo.dto.user.request;
 
 import lombok.Data;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @Data
 public class CreateUserRequestDTO  {
@@ -10,4 +11,12 @@ public class CreateUserRequestDTO  {
     private String phone;
     private String password;
 
+    public void isValid() throws DataIntegrityViolationException {
+        if(!(this.email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$"))){
+        throw new DataIntegrityViolationException("email non valida");
+        }
+        if((this.phone!=null) && !(this.phone.matches("^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$"))){
+        throw  new DataIntegrityViolationException("telefono non valido");
+        }
+    }
 }
