@@ -1,14 +1,22 @@
 package com.example.demo.service;
 
+import com.example.demo.configuration.HazelCastConfiguration;
 import com.example.demo.repository.UserReadOnlyRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.entity.FriendList;
 import com.example.demo.entity.Game;
 import com.example.demo.entity.User;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.map.IMap;
 import lombok.AllArgsConstructor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,27 +35,32 @@ public class UserService {
     private final UserReadOnlyRepository userReadOnlyRepository;
     private static final Logger logger= LoggerFactory.getLogger(UserService.class);
 
-    //TODO: creao 2 metodi uno per vedere se posso e uno per creare
+    @CacheEvict(allEntries = true,cacheNames = "user")
     public User createUser(User user) {
             user.setPassword(encoder.encode(user.getPassword()));
             user.setRole("ROLE_USER");
-            return userR.save(user);
+            User useradd=userR.save(user);
 
+            return useradd;
     }
 
-
+    @Cacheable(cacheNames = "user")
     public Optional<ArrayList<User>> getallUser() {
         ArrayList<User> list= (ArrayList<User>) userReadOnlyRepository.findAll();
+
         if(list.isEmpty()){
             return Optional.empty();
         }
-        else
-            return Optional.of(list);
-    }
+        else {
 
+            return Optional.of(list);
+        }
+    }
+    @Cacheable("user")
     public Optional<User> getuserById(long id) {
         return userR.findById(id);
     }
+    @Cacheable("user")
     public Optional<User> getuserByNameOrEmail(String name){
             return userReadOnlyRepository.findByNameOrEmail(name,name);
 
@@ -75,13 +88,14 @@ public class UserService {
         else
             return null;
     }
-
+    @CacheEvict(allEntries = true,cacheNames = "user")
     public void deleteAllUsers() {
         userR.deleteAll();
     }
 
 
     // Delete user
+    @CacheEvict(allEntries = true,cacheNames = "user")
     public void deleteUser(Long id) {
         userR.deleteById(id);
     }
@@ -95,4 +109,7 @@ public class UserService {
         }
         else return;
     }
+
+
+
 }

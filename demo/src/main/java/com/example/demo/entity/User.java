@@ -5,18 +5,21 @@ package com.example.demo.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="users",schema="Steam")
+@Table(name="users",schema="Steam",indexes = @Index(name="name_index",columnList = "name"))
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @Builder
-public class User {
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE) // non si puo usare identity per via del batching
     private long id;
     @Column(unique = true)
     private String name;

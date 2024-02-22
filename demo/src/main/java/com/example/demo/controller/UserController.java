@@ -146,7 +146,7 @@ public class UserController {
         try {
             userService.deleteAllUsers();
             return ResponseEntity.ok().body("All users have been deleted successfully.");
-        } catch (Error e) {
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error in deleting all");
         }
 
