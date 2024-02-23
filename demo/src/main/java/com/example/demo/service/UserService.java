@@ -6,6 +6,7 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.entity.FriendList;
 import com.example.demo.entity.Game;
 import com.example.demo.entity.User;
+import com.hazelcast.core.DistributedObject;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +37,7 @@ public class UserService {
     private final UserReadOnlyRepository userReadOnlyRepository;
     private static final Logger logger= LoggerFactory.getLogger(UserService.class);
 
-    @CacheEvict(allEntries = true,cacheNames = "user")
+    @CacheEvict(allEntries = true,cacheNames = "users")
     public User createUser(User user) {
             user.setPassword(encoder.encode(user.getPassword()));
             user.setRole("ROLE_USER");
@@ -44,10 +46,14 @@ public class UserService {
             return useradd;
     }
 
-    @Cacheable(cacheNames = "user")
+    @Cacheable(value = "users")
     public Optional<ArrayList<User>> getallUser() {
         ArrayList<User> list= (ArrayList<User>) userReadOnlyRepository.findAll();
+        Collection<DistributedObject> hz = Hazelcast.getAllHazelcastInstances().stream().findAny().orElseThrow().getDistributedObjects();
+        for(DistributedObject h:hz){
+            logger.info(h.getName());
 
+        }
         if(list.isEmpty()){
             return Optional.empty();
         }
@@ -56,19 +62,21 @@ public class UserService {
             return Optional.of(list);
         }
     }
-    @Cacheable("user")
+    @Cacheable(value = "user",key = "#id")
     public Optional<User> getuserById(long id) {
         return userR.findById(id);
     }
-    @Cacheable("user")
+    @Cacheable(value = "user",key = "#name")
     public Optional<User> getuserByNameOrEmail(String name){
-            return userReadOnlyRepository.findByNameOrEmail(name,name);
+           Optional<User> userfound = userReadOnlyRepository.findByNameOrEmail(name,name);
+            return userfound;
 
     }
     public Optional<User> getuserByNameAndEmail(String name,String email){
             return userReadOnlyRepository.findByNameAndEmail(name,email);
     }
 
+    @CachePut(value = "user",key = "#id")
     public Optional<User> updateUser(Long id, User userDetails) {
         Optional<User> user = userReadOnlyRepository.findById(id);
         if (user.isPresent()) {
@@ -95,7 +103,7 @@ public class UserService {
 
 
     // Delete user
-    @CacheEvict(allEntries = true,cacheNames = "user")
+    @CacheEvict(cacheNames = "user",key = "#id")
     public void deleteUser(Long id) {
         userR.deleteById(id);
     }
@@ -111,5 +119,11 @@ public class UserService {
     }
 
 
+    // pulisce la cache ogni 20 secondi
+    @Scheduled(cron = "0,20 * * * * ?")
+    @CacheEvict(cacheNames = "users",allEntries = true)
+    public void deleteCache(){
+    logger.info("cache cleared");
+    }
 
 }

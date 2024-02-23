@@ -23,7 +23,7 @@ public class HazelCastConfiguration {
                 new MapConfig().setName("com.example.demo.entity.User")
                         .setTimeToLiveSeconds(30)
         );
-        Hazelcast.newHazelcastInstance(conf);
+        //Hazelcast.newHazelcastInstance(conf);
 
         return conf;
     }
