@@ -10,6 +10,7 @@ import com.hazelcast.core.DistributedObject;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
+import de.qaware.tools.collectioncacheableforspring.CollectionCacheable;
 import lombok.AllArgsConstructor;
 
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public class UserService {
     private final UserReadOnlyRepository userReadOnlyRepository;
     private static final Logger logger= LoggerFactory.getLogger(UserService.class);
 
-    @CacheEvict(allEntries = true,cacheNames = "users")
+    @CacheEvict(cacheNames = "users")
     public User createUser(User user) {
             user.setPassword(encoder.encode(user.getPassword()));
             user.setRole("ROLE_USER");
@@ -46,14 +47,9 @@ public class UserService {
             return useradd;
     }
 
-    @Cacheable(value = "users")
+    @CollectionCacheable(value = "users")
     public Optional<ArrayList<User>> getallUser() {
         ArrayList<User> list= (ArrayList<User>) userReadOnlyRepository.findAll();
-        Collection<DistributedObject> hz = Hazelcast.getAllHazelcastInstances().stream().findAny().orElseThrow().getDistributedObjects();
-        for(DistributedObject h:hz){
-            logger.info(h.getName());
-
-        }
         if(list.isEmpty()){
             return Optional.empty();
         }
@@ -103,7 +99,7 @@ public class UserService {
 
 
     // Delete user
-    @CacheEvict(cacheNames = "user",key = "#id")
+    @CacheEvict(cacheNames = {"user","users"},key = "#id")
     public void deleteUser(Long id) {
         userR.deleteById(id);
     }
@@ -120,10 +116,10 @@ public class UserService {
 
 
     // pulisce la cache ogni 20 secondi
-    @Scheduled(cron = "0,20 * * * * ?")
+   /* @Scheduled(cron = "0,20 * * * * ?")
     @CacheEvict(cacheNames = "users",allEntries = true)
     public void deleteCache(){
     logger.info("cache cleared");
-    }
+    }*/
 
 }
