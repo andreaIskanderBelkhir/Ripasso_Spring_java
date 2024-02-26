@@ -65,7 +65,10 @@ public class HoursService {
             List<Long> findings=hoursR.findplayedgame(user.getId());
             return (ArrayList<Game>) gameR.findAllById(findings);
         }
-        else return null;
+        else
+        {
+            return null;
+        }
     }
     //su game controller
     public void allhourallgame(){

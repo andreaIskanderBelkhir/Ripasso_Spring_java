@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class GameController {
     @Autowired
     private GameService gameS;
-    @Autowired
-    private HoursService hoursS;
+
 
     @PostMapping
     public ResponseEntity<Game> Addgame(@RequestBody Game game){
@@ -53,14 +52,5 @@ public class GameController {
         }
     }
 
-    @GetMapping("/allGameByHours")
-    public ResponseEntity<String> Allgamebyhours(){
-        try{
-            hoursS.allhourallgame();
-            return ResponseEntity.ok("stamapti su console");
-        }catch (Error e){
-            System.out.println(e.getMessage());
-            return ResponseEntity.internalServerError().build();
-        }
-    }
+
 }

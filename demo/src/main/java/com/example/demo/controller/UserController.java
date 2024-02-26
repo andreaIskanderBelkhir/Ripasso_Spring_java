@@ -35,8 +35,7 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private HoursService hoursService;
+
 
     private final HttpHeaders headers = new HttpHeaders();
     // Create a new user
@@ -169,45 +168,6 @@ public class UserController {
             return ResponseEntity.internalServerError().body("Error in deleting that user");
         }
 
-    }
-
-    @PostMapping("/addgame/{id_u}/{id_g}")
-    public ResponseEntity<Object> addGame(@PathVariable Long id_u, @PathVariable Long id_g) {
-        try {
-            hoursService.addGame(id_u, id_g);
-            return ResponseEntity.ok().body("added");
-        } catch (Error e) {
-            return ResponseEntity.internalServerError().body("Error ");
-        }
-    }
-
-
-    @PutMapping("/updatehour/{id}/{id_g}/{h}")
-    public ResponseEntity<String> updatehour(@PathVariable Long id, @PathVariable Long id_g, @PathVariable Long h) {
-        try {
-            hoursService.modifyhour(id, id_g, h);
-            return ResponseEntity.ok().body("added");
-        } catch (Error e) {
-            return ResponseEntity.internalServerError().body("Error ");
-        }
-    }
-
-    @GetMapping("/playedGame/{id}")
-    public ResponseEntity<List<Game>> getgameplayed(@PathVariable Long id) {
-        List<Game> lista = hoursService.getplayedG(id);
-        ResponseEntity<List<Game>> response = null;
-        headers.clear();
-        if ((lista != null) && (!lista.isEmpty())) {
-            headers.set("steamlib", "leggi a sinistra");
-            response = new ResponseEntity<>(lista, headers, HttpStatus.OK);
-        } else if (lista == null) {
-            headers.set("error", "non presente l'utente");
-            response = new ResponseEntity<>(null, headers, HttpStatus.NOT_FOUND);
-        } else {
-            headers.set("error", "lista vuota");
-            response = new ResponseEntity<>(null, headers, HttpStatus.NO_CONTENT);
-        }
-        return response;
     }
 
 }
