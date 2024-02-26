@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.game.GameMapper;
+import com.example.demo.dto.game.response.GetGamePlayedResponseDTO;
+import com.example.demo.dto.game.response.GetGameResponseDTO;
 import com.example.demo.entity.Game;
 import com.example.demo.service.HoursService;
 import org.slf4j.Logger;
@@ -42,19 +45,18 @@ public class HoursController {
     }
 
     @GetMapping("/playedGame/{id}")
-    public ResponseEntity<List<Game>> getGamePlayed(@PathVariable Long id) {
-        List<Game> lista = hoursService.getplayedG(id);
-        ResponseEntity<List<Game>> response = null;
+    public ResponseEntity<GetGamePlayedResponseDTO> getGamePlayed(@PathVariable Long id) {
         headers.clear();
-        if ((lista != null) && (!lista.isEmpty())) {
-            headers.set("steamlib", "leggi a sinistra");
-            response = new ResponseEntity<>(lista, headers, HttpStatus.OK);
-        } else if (lista == null) {
-            headers.set("error", "non presente l'utente");
+        List<Game> lista = hoursService.getplayedG(id).orElseGet(()->null);
+        ResponseEntity<GetGamePlayedResponseDTO> response = null;
+        if ((lista != null)) {
+            GetGamePlayedResponseDTO listaDTO = GetGamePlayedResponseDTO.builder()
+                    .allGameplayedDTO(lista.stream().map(GameMapper::mapperToGet)
+                                    .map(g -> g.orElse(null)).toList())
+                            .build();
+            response = new ResponseEntity<>(listaDTO, headers, HttpStatus.OK);
+        } else  {
             response = new ResponseEntity<>(null, headers, HttpStatus.NOT_FOUND);
-        } else {
-            headers.set("error", "lista vuota");
-            response = new ResponseEntity<>(null, headers, HttpStatus.NO_CONTENT);
         }
         return response;
     }

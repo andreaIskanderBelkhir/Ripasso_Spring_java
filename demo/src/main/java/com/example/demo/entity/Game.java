@@ -2,16 +2,15 @@ package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name="game",schema="steam")
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter  @AllArgsConstructor @NoArgsConstructor
+@Builder
 public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

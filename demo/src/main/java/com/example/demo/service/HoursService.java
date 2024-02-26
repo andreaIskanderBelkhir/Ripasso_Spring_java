@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -59,15 +60,22 @@ public class HoursService {
     }
 
     //sempre user
-    public List<Game> getplayedG(Long iduser){
+    public Optional<List<Game>> getplayedG(Long iduser){
         if(userR.findById(iduser).isPresent()){
             User user=userR.findById(iduser).get();
             List<Long> findings=hoursR.findplayedgame(user.getId());
-            return (ArrayList<Game>) gameR.findAllById(findings);
+            ArrayList<Game> list = (ArrayList<Game>) gameR.findAllById(findings);
+            if(!(list.isEmpty())){
+                return Optional.of(list);
+            }
+            else
+            {
+                return Optional.empty();
+            }
         }
         else
         {
-            return null;
+            return Optional.empty();
         }
     }
     //su game controller

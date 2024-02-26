@@ -1,5 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.game.GameMapper;
+import com.example.demo.dto.game.request.CreateGameRequestDTO;
+import com.example.demo.dto.game.response.CreateGameResponseDTO;
+import com.example.demo.dto.game.response.GetGameResponseDTO;
 import com.example.demo.service.GameService;
 import com.example.demo.service.HoursService;
 import com.example.demo.entity.Game;
@@ -15,11 +19,11 @@ public class GameController {
 
 
     @PostMapping
-    public ResponseEntity<Game> Addgame(@RequestBody Game game){
+    public ResponseEntity<CreateGameResponseDTO> Addgame(@RequestBody CreateGameRequestDTO game){
         try {
-            Game gameADDED=gameS.Addgame(game);
+            Game gameADDED=gameS.Addgame(GameMapper.mapper(game));
             if(gameADDED!=null) {
-                return ResponseEntity.ok(gameADDED);
+                return ResponseEntity.ok(GameMapper.mapperToCreate(gameADDED));
             }
             else {
                 return ResponseEntity.internalServerError().build();
@@ -30,11 +34,11 @@ public class GameController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Game> Getbyid(@PathVariable Long id){
+    public ResponseEntity<GetGameResponseDTO> Getbyid(@PathVariable Long id){
         Game gametrovato= gameS.GetById(id).orElseGet(()->null);
         if(gametrovato!=null)
         {
-            return ResponseEntity.ok().body(gametrovato);
+            return ResponseEntity.ok().body(GameMapper.mapperToGet(gametrovato).get());
         }
         else {
             return ResponseEntity.notFound().build();

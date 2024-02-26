@@ -38,7 +38,7 @@ public class UserController {
 
 
     private final HttpHeaders headers = new HttpHeaders();
-    // Create a new user
+
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
