@@ -1,28 +1,31 @@
 package com.example.demo.service;
 
+import com.example.demo.repository.GameRepository;
 import com.example.demo.repository.HoursRepository;
 import com.example.demo.entity.*;
 
+import com.example.demo.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class HoursService {
-    @Autowired
-    private HoursRepository hoursR;
-    @Autowired
-    private UserService userS;
-    @Autowired
-    private GameService gameS;
+
+    private final HoursRepository hoursR;
+    private final UserRepository userR;
+    private final GameRepository gameR;
 
 
     //usato in user c
     public void addGame(Long idUser,Long idGame){
-        if((userS.getuserById(idUser).isPresent()) ||(gameS.GetById(idGame).isPresent())){
-            User user=userS.getuserById(idUser).get();
-            Game game=gameS.GetById(idGame).get();
+        if((userR.findById(idUser).isPresent()) && (gameR.findById(idGame).isPresent())){
+            User user=userR.findById(idUser).get();
+            Game game=gameR.findById(idGame).get();
             HourGame instergame=new HourGame(new Library(idUser,idGame),user,game,(long)0);
             hoursR.save(instergame);
             System.out.println("done");
@@ -35,9 +38,9 @@ public class HoursService {
     }
 //same as  sopra
     public void modifyhour(Long idUSer,Long idGame,long h){
-        if ((userS.getuserById(idUSer).isPresent())||(gameS.GetById(idGame).isPresent())){
-            User user=userS.getuserById(idUSer).get();
-            Game game=gameS.GetById(idGame).get();
+        if ((userR.findById(idUSer).isPresent())||(gameR.findById(idGame).isPresent())){
+            User user=userR.findById(idUSer).get();
+            Game game=gameR.findById(idGame).get();
             if (hoursR.findById(new Library(idUSer,idGame)).isPresent()) {
                 HourGame instgame = hoursR.findById(new Library(idUSer, idGame)).get();
                 instgame.setHour(instgame.getHour()+h);
@@ -57,10 +60,10 @@ public class HoursService {
 
     //sempre user
     public List<Game> getplayedG(Long iduser){
-        if(userS.getuserById(iduser).isPresent()){
-            User user=userS.getuserById(iduser).get();
+        if(userR.findById(iduser).isPresent()){
+            User user=userR.findById(iduser).get();
             List<Long> findings=hoursR.findplayedgame(user.getId());
-            return gameS.Getallbyid(findings);
+            return (ArrayList<Game>) gameR.findAllById(findings);
         }
         else return null;
     }

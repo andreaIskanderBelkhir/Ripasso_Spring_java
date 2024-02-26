@@ -28,7 +28,7 @@ public class UserService {
 
     private final UserRepository userR;
 
-    private final GameService gameS;
+
 
     private final PasswordEncoder encoder;
 
@@ -101,15 +101,6 @@ public class UserService {
         userR.deleteById(id);
     }
 
-
-    public void addGame(Long idUser,Long idGame){
-        if((getuserById(idUser).isPresent()) ||(gameS.GetById(idGame).isPresent())){
-            User user=getuserById(idUser).get();
-            Game game=gameS.GetById(idGame).get();
-
-        }
-        else return;
-    }
 
 
     // pulisce la cache ogni 20 secondi
