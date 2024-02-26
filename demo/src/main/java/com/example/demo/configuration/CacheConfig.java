@@ -9,18 +9,14 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.ObjectInputFilter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Properties;
-import java.util.logging.Logger;
+
 
 @Configuration
-public class HazelCastConfiguration {
+public class CacheConfig {
     @Bean
-    public static Config config() throws URISyntaxException {
-        Config conf=new Config().setInstanceName("user").addMapConfig(
-                new MapConfig().setName("com.example.demo.entity.User")
+    public Config config() {
+        Config conf=new Config().setInstanceName("hazelcast-instance").addMapConfig(
+                new MapConfig().setName("users")
                         .setTimeToLiveSeconds(30)
         );
         //Hazelcast.newHazelcastInstance(conf);

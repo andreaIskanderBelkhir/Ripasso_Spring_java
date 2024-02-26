@@ -130,13 +130,20 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<PutUserResponseDTO> updateUser(@PathVariable Long id, @RequestBody PutUserRequestDTO userDetails) {
 
-        Optional<User> useropt                       = userService.updateUser(id, UserMapper.mapper(userDetails));
-        Optional<PutUserResponseDTO> userResponseDTO = UserMapper.mapperToPut(useropt);
+        try {
+            userDetails.isValid();
+            Optional<User> useropt = userService.updateUser(id, UserMapper.mapper(userDetails));
+            Optional<PutUserResponseDTO> userResponseDTO = UserMapper.mapperToPut(useropt);
 
-        return userResponseDTO
-                .map(ResponseEntity::ok)
-                .orElseGet(() ->
-                        ResponseEntity.noContent().build());
+            return userResponseDTO
+                    .map(ResponseEntity::ok)
+                    .orElseGet(() ->
+                            ResponseEntity.noContent().build());
+        }catch (DataIntegrityViolationException a) {
+            logger.info("dataIntegrityViolation");
+            logger.warn(a.getMessage());
+            return ResponseEntity.internalServerError().body(null);
+        }
     }
 
 

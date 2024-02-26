@@ -1,15 +1,12 @@
 package com.example.demo.service;
 
-import com.example.demo.configuration.HazelCastConfiguration;
+
 import com.example.demo.repository.UserReadOnlyRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.entity.FriendList;
 import com.example.demo.entity.Game;
 import com.example.demo.entity.User;
-import com.hazelcast.core.DistributedObject;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.map.IMap;
+
 import de.qaware.tools.collectioncacheableforspring.CollectionCacheable;
 import lombok.AllArgsConstructor;
 
@@ -40,11 +37,11 @@ public class UserService {
 
     @CacheEvict(cacheNames = "users")
     public User createUser(User user) {
-            user.setPassword(encoder.encode(user.getPassword()));
-            user.setRole("ROLE_USER");
-            User useradd=userR.save(user);
+        user.setPassword(encoder.encode(user.getPassword()));
+        user.setRole("ROLE_USER");
+        User useradd=userR.save(user);
 
-            return useradd;
+        return useradd;
     }
 
     @CollectionCacheable(value = "users")
@@ -64,12 +61,12 @@ public class UserService {
     }
     @Cacheable(value = "user",key = "#name")
     public Optional<User> getuserByNameOrEmail(String name){
-           Optional<User> userfound = userReadOnlyRepository.findByNameOrEmail(name,name);
-            return userfound;
+        Optional<User> userfound = userReadOnlyRepository.findByNameOrEmail(name,name);
+        return userfound;
 
     }
     public Optional<User> getuserByNameAndEmail(String name,String email){
-            return userReadOnlyRepository.findByNameAndEmail(name,email);
+        return userReadOnlyRepository.findByNameAndEmail(name,email);
     }
 
     @CachePut(value = "user",key = "#id")

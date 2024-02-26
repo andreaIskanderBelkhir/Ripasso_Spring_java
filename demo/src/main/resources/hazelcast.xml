@@ -350,7 +350,7 @@
         </tiered-store>
 
     </map>
-    <map name="com.example.demo.entity.User">
+    <map name="user">
         <!--
            Data type that will be used for storing recordMap.
            Possible values:
