@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.controller.utility.HoursUtilityController;
 import com.example.demo.dto.game.GameMapper;
 import com.example.demo.dto.game.response.GetGamePlayedResponseDTO;
 import com.example.demo.dto.game.response.GetGameResponseDTO;
@@ -19,56 +20,25 @@ import java.util.List;
 @RequestMapping("/hours")
 public class HoursController {
     @Autowired
-    private HoursService hoursService;
-    private final HttpHeaders headers = new HttpHeaders();
-
-    private static final Logger logger = LoggerFactory.getLogger(HoursController.class);
+    private HoursUtilityController hoursUtility;
 
     @PostMapping("/addgame/{id_u}/{id_g}")
     public ResponseEntity<Object> addGame(@PathVariable Long id_u, @PathVariable Long id_g) {
-        try {
-            hoursService.addGame(id_u, id_g);
-            return ResponseEntity.ok().body("added");
-        } catch (Error e) {
-            return ResponseEntity.internalServerError().body("Error ");
-        }
+        return hoursUtility.supportAddGame(id_u, id_g);
     }
 
     @PutMapping("/updatehour/{id}/{id_g}/{h}")
     public ResponseEntity<String> updateHour(@PathVariable Long id, @PathVariable Long id_g, @PathVariable Long h) {
-        try {
-            hoursService.modifyhour(id, id_g, h);
-            return ResponseEntity.ok().body("added");
-        } catch (Error e) {
-            return ResponseEntity.internalServerError().body("Error ");
-        }
+        return hoursUtility.supportUpdateHour(id, id_g, h);
     }
 
     @GetMapping("/playedGame/{id}")
     public ResponseEntity<GetGamePlayedResponseDTO> getGamePlayed(@PathVariable Long id) {
-        headers.clear();
-        List<Game> lista = hoursService.getplayedG(id).orElseGet(()->null);
-        ResponseEntity<GetGamePlayedResponseDTO> response = null;
-        if ((lista != null)) {
-            GetGamePlayedResponseDTO listaDTO = GetGamePlayedResponseDTO.builder()
-                    .allGameplayedDTO(lista.stream().map(GameMapper::mapperToGet)
-                                    .map(g -> g.orElse(null)).toList())
-                            .build();
-            response = new ResponseEntity<>(listaDTO, headers, HttpStatus.OK);
-        } else  {
-            response = new ResponseEntity<>(null, headers, HttpStatus.NOT_FOUND);
-        }
-        return response;
+        return hoursUtility.supportGetGamePlayed(id);
     }
 
     @GetMapping("/allGameByHours")
     public ResponseEntity<String> AllGameByHours(){
-        try{
-            hoursService.allhourallgame();
-            return ResponseEntity.ok("stamapti su console");
-        }catch (Error e){
-            System.out.println(e.getMessage());
-            return ResponseEntity.internalServerError().build();
-        }
-    }
+        return hoursUtility.supportAllGameByHours();
+
 }
