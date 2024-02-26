@@ -38,7 +38,7 @@ public class HoursService {
     }
 //same as  sopra
     public void modifyhour(Long idUSer,Long idGame,long h){
-        if ((userR.findById(idUSer).isPresent())||(gameR.findById(idGame).isPresent())){
+        if ((userR.findById(idUSer).isPresent()) && (gameR.findById(idGame).isPresent())){
             User user=userR.findById(idUSer).get();
             Game game=gameR.findById(idGame).get();
             if (hoursR.findById(new Library(idUSer,idGame)).isPresent()) {
@@ -48,12 +48,12 @@ public class HoursService {
             }
             else{
                 System.out.println("game not owned");
-                return;
+
             }
         }
         else {
             System.out.println("failed one of the is not found");
-            return;
+
         }
 
     }
