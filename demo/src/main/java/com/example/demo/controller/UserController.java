@@ -14,6 +14,9 @@ import com.example.demo.service.UserService;
 import com.example.demo.entity.Game;
 import com.example.demo.entity.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +41,11 @@ public class UserController {
     @Autowired
     private UserUtilityController userUtility;
 
+    @Operation(summary = "Create a new user on the db")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode ="200" ,description ="User got added on the db"),
+            @ApiResponse(responseCode ="400" ,description ="user cant be added to the db ")
+    })
     @PostMapping
     public ResponseEntity<CreateUserResponseDTO> createUser(@RequestBody CreateUserRequestDTO userRequestDTO) {
     return userUtility.supportCreateUser(userRequestDTO);

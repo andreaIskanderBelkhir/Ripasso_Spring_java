@@ -38,7 +38,7 @@ public class HoursController {
     }
 
     @GetMapping("/allGameByHours")
-    public ResponseEntity<String> AllGameByHours() {
+    public ResponseEntity<String> allGameByHours() {
         return hoursUtility.supportAllGameByHours();
     }
 }
