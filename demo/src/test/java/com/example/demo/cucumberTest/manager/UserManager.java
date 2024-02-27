@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * this class define the business logic for the UserStep
+ */
 @RequiredArgsConstructor
 @Service // service perche ha al suo intero logica e pro vvede a dei servizi
 public class UserManager {

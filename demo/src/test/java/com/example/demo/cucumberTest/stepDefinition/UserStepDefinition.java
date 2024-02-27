@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
-
+/**
+ * this class define the step used in test cucumber made for the user class
+ */
 @SpringBootTest
 @AllArgsConstructor //forza i costruttoti non null quindi fa injection  per service e con notnull si assicura che non ci sia null nel manager
 public class UserStepDefinition  {

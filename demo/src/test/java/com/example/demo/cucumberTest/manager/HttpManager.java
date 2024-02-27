@@ -12,8 +12,10 @@ import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 
-//TODO: metodi per leggere/PARSING DEI RISULATI DELLA RISPosta(eg. get result code, get entity to string)
-//TODO:
+
+/**
+ * This class define methone for handling http call
+ */
 public class HttpManager {
 
     //non si puo usare generico va creato per ogni chiamata
