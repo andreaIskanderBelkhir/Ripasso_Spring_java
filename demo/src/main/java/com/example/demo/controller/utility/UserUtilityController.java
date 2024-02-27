@@ -24,8 +24,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Bean with the business logic for UserController
+ */
 @Component
 public class UserUtilityController {
+
+    /**
+     * Bean with the Service design pattern fpr the user
+     */
     @Autowired
     private UserService userService;
 
@@ -35,6 +42,13 @@ public class UserUtilityController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+
+    /**
+     * Business logic for the endpoint Create User
+     * @param userRequestDTO  request body of a user under the DTO design pattern
+     * @return response entity with a user under the DTO design pattern for the body, and a response code "200" if the used is added to the db or else a code "400" if a user with some of the parameter are the the same of another user already present or else the code "500"
+     *
+     */
     public  ResponseEntity<CreateUserResponseDTO> supportCreateUser(CreateUserRequestDTO userRequestDTO){
         try {
             userRequestDTO.isValid();
@@ -71,6 +85,10 @@ public class UserUtilityController {
         }
     }
 
+    /**
+     * Business logic for the endpoint gettAllUsers
+     * @return response entity with an object under the DTO design pattern having a list of user, and a response code "200"  if the list is not empty or else a code "204"
+     */
     public ResponseEntity<GetAllUserResponseDTO> supportGetAllUsers() {
         headers.clear();
         List<User> lista                               = userService.getallUser().orElseGet(() -> null);
@@ -89,6 +107,12 @@ public class UserUtilityController {
         }
         return risposta;
     }
+
+    /**
+     * Business logic for the endpoint getUserByNameOrMail
+     * @param string a string refering to a name, an email or the id of the user you want to retrive
+     * @return response entity with a user under the DTO design pattern for the body, and a response code "200" if the used is found in the db or else a code "400"
+     */
     public ResponseEntity<GetUserResponseDTO> supportGetUserByNameOrMail(@PathVariable String string) {
         User user;
         if (string.matches("\\b\\d+\\b")) {
@@ -111,6 +135,12 @@ public class UserUtilityController {
         return rep;
     }
 
+    /**
+     * Business logic for the endpoint UpdateUser
+     * @param id the id of the user you want to update
+     * @param userDetails request body of a user under the DTO design pattern with the new information
+     * @return response entity with a user under the DTO design pattern for the body, and a response code "200" if the user is updated in the db or else a code "204" if the user isn't found in the db or the code "500" if the request body is not valid
+     */
         public ResponseEntity<PutUserResponseDTO> supportUpdateUser( Long id,  PutUserRequestDTO userDetails) {
 
             try {
@@ -129,6 +159,10 @@ public class UserUtilityController {
             }
         }
 
+    /**
+     * Business logic for the endpoint deleteAllUsers
+     * @return response entity with a string that specified the result of the operation, and a code "200" if the users are removed or "500"
+     */
     public ResponseEntity<String> supportDeleteAllUsers() {
         try {
             userService.deleteAllUsers();
@@ -137,7 +171,11 @@ public class UserUtilityController {
             return ResponseEntity.internalServerError().body("Error in deleting all");
         }
     }
-
+    /**
+     * business logic for the endpoint deleteUser
+     * @param id the id of the user you want to remove from the db
+     * @return  response entity with a string that specified the result of the operation, and a code "200" if the user is removed or "500"
+     */
     public ResponseEntity<Object> supportDeleteUser(Long id) {
         try {
             userService.deleteUser(id);

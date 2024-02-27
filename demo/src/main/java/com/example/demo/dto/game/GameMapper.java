@@ -7,6 +7,9 @@ import com.example.demo.entity.Game;
 
 import java.util.Optional;
 
+/**
+ * class used to map the entity game to a game DTO and viceversa
+ */
 public class GameMapper {
     public static Game mapper(CreateGameRequestDTO gameDTO){
         Game game                     = Game.builder()

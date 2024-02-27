@@ -11,12 +11,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Bean with the logic for GameController
+ */
 @Component
 public class GameUtilityController {
+    /**
+     * Bean with the Service design pattern fpr the game
+     */
     @Autowired
     private GameService gameS;
 
-
+    /**
+     * Business logic for the endpoint addGame
+     * @param game  request body of a game under the DTO design pattern
+     * @return response entity with a game under the DTO design pattern for the body, and a response code "200" if the game is added to the db or else a code "500"
+     */
     public ResponseEntity<CreateGameResponseDTO> supportAddGame( CreateGameRequestDTO game){
         try {
             Game gameADDED=gameS.Addgame(GameMapper.mapper(game));
@@ -31,7 +41,11 @@ public class GameUtilityController {
         }
     }
 
-
+    /**
+     * Business logic for the endpoint getById
+     * @param id a long of the game you want to retrive
+     * @return response entity with a game under the DTO design pattern for the body, and a response code "200" if the game is updated in the db or else a code "204" if the game isn't found in the db
+     */
     public ResponseEntity<GetGameResponseDTO> supportGetbyid(Long id){
         Game gametrovato= gameS.GetById(id).orElseGet(()->null);
         if(gametrovato!=null)
@@ -44,7 +58,11 @@ public class GameUtilityController {
 
     }
 
-
+    /**
+     * Business logic for the endpoint deleteById
+     * @param id a long of the game you want to remove
+     * @return response entity with a string that specified the result of the operation, and a code "200" if the game is removed or "500"
+     */
     public ResponseEntity<String> supportDeletbyid(@PathVariable Long id){
         try{
             gameS.Deletegame(id);

@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entity class that represent a many to many user-game, representing the relationship where a user has in his library a game
+ */
 @Entity
 @Table(name="hours",schema="steam")
 @Getter @Setter @NoArgsConstructor

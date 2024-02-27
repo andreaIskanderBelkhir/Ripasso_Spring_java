@@ -12,6 +12,9 @@ import com.example.demo.entity.User;
 import java.util.HashSet;
 import java.util.Optional;
 
+/**
+ * class used to map the entity user to a user DTO and viceversa
+ */
 public class UserMapper {
 
     public static User mapper(CreateUserRequestDTO userRequestDTO){

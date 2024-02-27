@@ -7,6 +7,9 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Entity class that represent a game
+ */
 @Entity
 @Table(name="game",schema="steam")
 @Getter @Setter  @AllArgsConstructor @NoArgsConstructor

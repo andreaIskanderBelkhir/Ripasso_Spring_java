@@ -22,20 +22,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * Bean connection the controller to the repository
+ */
 @Service
 @AllArgsConstructor
 public class UserService {
 
     private final UserRepository userR;
 
-
-
     private final PasswordEncoder encoder;
 
     private final UserReadOnlyRepository userReadOnlyRepository;
     private static final Logger logger= LoggerFactory.getLogger(UserService.class);
 
-    @CacheEvict(cacheNames = "users")
+    /**
+     * Method that insert a new user in the db, it also encript the password and set a base role, \n also update the cache named users
+     * @param user the entity to save
+     * @return the entity that got saved
+     */
+    @CachePut(cacheNames = "users")
     public User createUser(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRole("ROLE_USER");
@@ -44,6 +50,10 @@ public class UserService {
         return useradd;
     }
 
+    /**
+     * Method that retrive an optional of the list having all the user in the db, its also cached in the cachelist named users
+     * @return a list of all users, its an optional so it can be empty
+     */
     @CollectionCacheable(value = "users")
     public Optional<ArrayList<User>> getallUser() {
         ArrayList<User> list= (ArrayList<User>) userReadOnlyRepository.findAll();
@@ -55,10 +65,21 @@ public class UserService {
             return Optional.of(list);
         }
     }
+
+    /**
+     * Method that retrive a user by his id
+     * @param id the id of the user you want to retrive
+     * @return an optional version of the user retrived, it can be empty
+     */
     @Cacheable(value = "user",key = "#id")
     public Optional<User> getuserById(long id) {
         return userR.findById(id);
     }
+    /**
+     * Method that retrieve a user by his name or email
+     * @param name the name or email of the user you want to retrive
+     * @return an optional version of the user retrived, it can be empty
+     */
     @Cacheable(value = "user",key = "#name")
     public Optional<User> getuserByNameOrEmail(String name){
         Optional<User> userfound = userReadOnlyRepository.findByNameOrEmail(name,name);
@@ -69,6 +90,12 @@ public class UserService {
         return userReadOnlyRepository.findByNameAndEmail(name,email);
     }
 
+    /**
+     * Method that update a user in the db
+     * @param id the id of the user to update
+     * @param userDetails The new details of the user to update
+     * @return an optional version of the user updated, it can be empty
+     */
     @CachePut(value = "user",key = "#id")
     public Optional<User> updateUser(Long id, User userDetails) {
         Optional<User> user = userReadOnlyRepository.findById(id);
@@ -89,12 +116,20 @@ public class UserService {
         else
             return null;
     }
+
+    /**
+     * Method for removing all the users from the db
+     */
     @CacheEvict(allEntries = true,cacheNames = "user")
     public void deleteAllUsers() {
         userR.deleteAll();
     }
 
 
+    /**
+     * Method for removing a single user from the db
+     * @param id the id of the user to remove
+     */
     // Delete user
     @CacheEvict(cacheNames = {"user","users"},key = "#id")
     public void deleteUser(Long id) {

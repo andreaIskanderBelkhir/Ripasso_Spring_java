@@ -10,7 +10,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
+/**
+ * Entity class that represent a user
+ */
 @Entity
 @Table(name="users",schema="Steam",indexes = @Index(name="name_index",columnList = "name"))
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor

@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * entity class that represent a many to many for the user entity \n also this class is dismissed/ ignored for now
+ */
 @Entity
 @Table(name="friendlist",schema="steam")
 @Getter @Setter @NoArgsConstructor

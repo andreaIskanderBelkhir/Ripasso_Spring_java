@@ -19,8 +19,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
+/**
+ * Bean with the logic for HoursController
+ */
 @Component
 public class HoursUtilityController {
+    /**
+     * Bean with the Service design pattern fpr the hours
+     */
     @Autowired
     private HoursService hoursService;
     private final HttpHeaders headers = new HttpHeaders();
@@ -28,6 +34,12 @@ public class HoursUtilityController {
     private static final Logger logger = LoggerFactory.getLogger(HoursController.class);
 
 
+    /**
+     * Business logic for the endpoint addGame
+     * @param id_u the id of the user you want to add the game
+     * @param id_g the id of the game you want to add
+     * @return response entity with a string that specified the result of the operation, and a code "200" if the user is removed or "500"
+     */
     public ResponseEntity<Object> supportAddGame( Long id_u,  Long id_g) {
         try {
             hoursService.addGame(id_u, id_g);
@@ -37,7 +49,13 @@ public class HoursUtilityController {
         }
     }
 
-
+    /**
+     * Business logic for the endpoint updateHour
+     * @param id id of the user of the relationship
+     * @param id_g id of the game of the relationship
+     * @param h a long value that indicate how much the parameter is updated
+     * @return response entity with a string that specified the result of the operation, and a code "200" if the user is removed or "500"
+     */
     public ResponseEntity<String> supportUpdateHour( Long id,  Long id_g,  Long h) {
         try {
             hoursService.modifyhour(id, id_g, h);
@@ -47,7 +65,11 @@ public class HoursUtilityController {
         }
     }
 
-
+    /**
+     * Business logic for the endpoint getGamePlayed
+     * @param id id of the user you want all the games
+     * @return response entity with an object under the DTO design pattern having a list of game, and a response code "200"  if the list is not empty or else a code "204"
+     */
     public ResponseEntity<GetGamePlayedResponseDTO> supportGetGamePlayed( Long id) {
         headers.clear();
         List<Game> lista = hoursService.getplayedG(id).orElseGet(()->null);
@@ -63,7 +85,10 @@ public class HoursUtilityController {
         }
         return response;
     }
-
+    /**
+     * Business logic for the endpoint allGameByHours
+     * @return response entity with a string that specified the result of the operation, and a code "200" if the user is removed or "500"
+     */
     public ResponseEntity<String> supportAllGameByHours(){
         try{
             hoursService.allhourallgame();
