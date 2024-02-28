@@ -1,18 +1,20 @@
 package com.example.demo.dto.user.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.lang.Nullable;
 
 
 @Data
 public class CreateUserRequestDTO  {
+    @Nullable
     private long id;
     @NotBlank
     private String name;
@@ -42,5 +44,13 @@ public class CreateUserRequestDTO  {
     @Schema(example = "APassword")
     public String getPassword(){
         return password;
+    }
+    @Schema(nullable = true)
+    public long getId(){
+        return id;
+    }
+    @Schema(nullable = true,example = "468511")
+    public String getPhone(){
+        return phone;
     }
 }
