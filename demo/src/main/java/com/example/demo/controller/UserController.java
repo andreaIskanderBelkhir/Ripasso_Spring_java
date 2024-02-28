@@ -15,6 +15,9 @@ import com.example.demo.entity.Game;
 import com.example.demo.entity.User;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.hibernate.Session;
@@ -57,9 +60,11 @@ public class UserController {
      */
     @Operation(summary = "Create a new user on the db")
     @ApiResponses(value = {
-            @ApiResponse(responseCode ="200" ,description ="User got added on the db"),
-            @ApiResponse(responseCode ="400" ,description ="user cant be added to the db ")
-    })
+            @ApiResponse(responseCode ="200" ,ref = "successfulResponseAddUser"),
+            @ApiResponse(responseCode ="400" ,ref = "badRequestAddUser"),
+            @ApiResponse(responseCode ="500" ,ref = "internalServerErrorAddUser")
+    }) // aggiunta di content e schema, ora nella parte di risposta viene specificato se 200 cosa torna e che non torna niente altrimenti
+    // ora su OpenApiConfig
     @PostMapping
     public ResponseEntity<CreateUserResponseDTO> createUser(@RequestBody CreateUserRequestDTO userRequestDTO) {
     return userUtility.supportCreateUser(userRequestDTO);
@@ -82,7 +87,8 @@ public class UserController {
      */
     // Get user by a string or long
     @GetMapping("/{string}")
-    public ResponseEntity<GetUserResponseDTO> getUserByNameOrMail(@PathVariable String string) {
+    //con @Parameter possimao aggiugere descrizione al parametro su swagger
+    public ResponseEntity<GetUserResponseDTO> getUserByNameOrMail(@Parameter(description = "stringa che indichi un nome,una mail o l'id di un user da cercare") @PathVariable String string) {
         return userUtility.supportGetUserByNameOrMail(string);
     }
 

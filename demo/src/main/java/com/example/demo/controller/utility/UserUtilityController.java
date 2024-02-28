@@ -10,6 +10,7 @@ import com.example.demo.dto.user.response.GetUserResponseDTO;
 import com.example.demo.dto.user.response.PutUserResponseDTO;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +29,20 @@ import java.util.Optional;
  * Bean with the business logic for UserController
  */
 @Component
+@AllArgsConstructor
 public class UserUtilityController {
 
     /**
      * Bean with the Service design pattern fpr the user
      */
-    @Autowired
+
     private UserService userService;
 
 
     private final HttpHeaders headers = new HttpHeaders();
 
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserUtilityController.class);
 
 
     /**
@@ -52,35 +54,39 @@ public class UserUtilityController {
     public  ResponseEntity<CreateUserResponseDTO> supportCreateUser(CreateUserRequestDTO userRequestDTO){
         try {
             userRequestDTO.isValid();
-            boolean presId    = userService.getuserById(userRequestDTO.getId()).isPresent();
-            boolean presName  = userService.getuserByNameOrEmail(userRequestDTO.getName()).isPresent();
-            boolean presEmail = userService.getuserByNameOrEmail(userRequestDTO.getEmail()).isPresent();
-            boolean res = presId   ||
-                    presName ||
-                    presEmail;
-
-            if (!res) {
-                User useradd = userService.createUser(UserMapper.mapper(userRequestDTO));
-                CreateUserResponseDTO userResponseDTO=UserMapper.mapperToCreate(useradd);
-                return ResponseEntity.ok(userResponseDTO);
-            } else {
-                if(presId){
-                    logger.warn("id gia presente");
-                }
-                if(presName){
-                    logger.warn("nome gia presente");
-                }
-                if(presEmail){
-                    logger.warn("email gia presente");
-                }
+            Optional<User> presId    = userService.getuserById(userRequestDTO.getId());
+            if(presId.isPresent()){
+                logger.warn("id gia presente");
                 return ResponseEntity.badRequest().build();
             }
+            else {
+                boolean presName = userService.getuserByNameOrEmail(userRequestDTO.getName()).isPresent();
+                boolean presEmail = userService.getuserByNameOrEmail(userRequestDTO.getEmail()).isPresent();
+                boolean res =
+                        presName ||
+                                presEmail;
+
+                if (!res) {
+                    User useradd = userService.createUser(UserMapper.mapper(userRequestDTO));
+                    CreateUserResponseDTO userResponseDTO = UserMapper.mapperToCreate(useradd);
+                    return ResponseEntity.ok(userResponseDTO);
+                } else {
+
+                    if (presName) {
+                        logger.warn("nome gia presente");
+                    }
+                    if (presEmail) {
+                        logger.warn("email gia presente");
+                    }
+                    return ResponseEntity.badRequest().build();
+                }
+            }
         } catch (IllegalArgumentException e) {
-            logger.info("illegal ARGS");
+            logger.warn("UserUtilityController::supportCreateUser {} {}",e.getClass(),e.getMessage());
             return ResponseEntity.internalServerError().body(null);
         } catch (DataIntegrityViolationException a) {
-            logger.info("dataIntegrityViolation");
-            logger.warn(a.getMessage());
+
+            logger.warn("UserUtilityController::supportCreateUser {} {}",a.getMessage(),a.getClass());
             return ResponseEntity.internalServerError().body(null);
         }
     }
@@ -124,6 +130,7 @@ public class UserUtilityController {
         headers.clear();
         Optional<GetUserResponseDTO> userResponse = UserMapper.mapperToGet(user);
         if (userResponse.isPresent()) {
+            //header setting was just part of learning how to use header
             headers.set("Custom-Header", "YEP custom header");
             rep = new ResponseEntity<>(userResponse.get(), headers, HttpStatus.OK);
 
@@ -153,8 +160,7 @@ public class UserUtilityController {
                         .orElseGet(() ->
                                 ResponseEntity.noContent().build());
             }catch (DataIntegrityViolationException a) {
-                logger.info("dataIntegrityViolation");
-                logger.warn(a.getMessage());
+                logger.warn("UserUtilityController::supportUpdateUser {} {}",a.getClass(),a.getMessage());
                 return ResponseEntity.internalServerError().body(null);
             }
         }
@@ -168,7 +174,8 @@ public class UserUtilityController {
             userService.deleteAllUsers();
             return ResponseEntity.ok().body("All users have been deleted successfully.");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error in deleting all");
+            logger.warn("{} {}",e.getClass(),e.getMessage());
+            return ResponseEntity.internalServerError().body("Error in deleting all ");
         }
     }
     /**
@@ -180,7 +187,7 @@ public class UserUtilityController {
         try {
             userService.deleteUser(id);
             return ResponseEntity.ok().body("the user have been deleted successfully.");
-        } catch (Error e) {
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error in deleting that user");
         }
     }

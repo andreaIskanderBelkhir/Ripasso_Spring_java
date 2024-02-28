@@ -80,7 +80,7 @@ public class UserService {
      * @param name the name or email of the user you want to retrive
      * @return an optional version of the user retrived, it can be empty
      */
-    @Cacheable(value = "user",key = "#name")
+
     public Optional<User> getuserByNameOrEmail(String name){
         Optional<User> userfound = userReadOnlyRepository.findByNameOrEmail(name,name);
         return userfound;
