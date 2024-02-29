@@ -35,10 +35,11 @@ public class SecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(headerAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/user").//hasAuthority("ADMIN")
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/user").//hasRole("ADMIN")
                         permitAll()
+                        .requestMatchers("/user/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
-                .logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/logout.done").deleteCookies("JSESSIONID")
                         .invalidateHttpSession(true))
                 .formLogin(Customizer.withDefaults());

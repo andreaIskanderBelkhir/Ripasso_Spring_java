@@ -34,7 +34,7 @@ public class HoursController {
      * @param id_g the id of the game you want to add
      * @return response entity with a string that specified the result of the operation, and a code "200" if the user is removed or "500"
      */
-    @PostMapping("/addgame/{id_u}/{id_g}")
+    @PostMapping("/addGame/{id_u}/{id_g}")
     public ResponseEntity<Object> addGame(@PathVariable Long id_u, @PathVariable Long id_g) {
         return hoursUtility.supportAddGame(id_u, id_g);
     }
@@ -46,7 +46,7 @@ public class HoursController {
      * @param h a long value that indicate how much the parameter is updated
      * @return response entity with a string that specified the result of the operation, and a code "200" if the user is removed or "500"
      */
-    @PutMapping("/updatehour/{id}/{id_g}/{h}")
+    @PutMapping("/updateHour/{id}/{id_g}/{h}")
     public ResponseEntity<String> updateHour(@PathVariable Long id, @PathVariable Long id_g, @PathVariable Long h) {
         return hoursUtility.supportUpdateHour(id, id_g, h);
     }
