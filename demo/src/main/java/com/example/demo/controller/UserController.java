@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.configuration.OpenApiConfig;
 import com.example.demo.controller.utility.UserUtilityController;
 import com.example.demo.dto.user.UserMapper;
 import com.example.demo.dto.user.request.CreateUserRequestDTO;
@@ -52,7 +53,6 @@ public class UserController {
     @Autowired
     private UserUtilityController userUtility;
 
-
     /**
      * Endpoint for the api that create a new user in the db
      * @param userRequestDTO  request body of a user under the DTO design pattern
@@ -61,9 +61,9 @@ public class UserController {
      */
     @Operation(summary = "Create a new user on the db")
     @ApiResponses(value = {
-            @ApiResponse(responseCode ="200" ,ref = "successfulResponseAddUser"),
-            @ApiResponse(responseCode ="400" ,ref = "badRequestAddUser"),
-            @ApiResponse(responseCode ="500" ,ref = "internalServerErrorAddUser")
+            @ApiResponse(responseCode ="200" ,ref = OpenApiConfig.SUCCESSFUL_RESPONSE_ADD_USER),
+            @ApiResponse(responseCode ="400" ,ref = OpenApiConfig.BAD_REQUEST_ADD_USER),
+            @ApiResponse(responseCode ="500" ,ref = OpenApiConfig.INTERNAL_SERVER_ERROR_ADD_USER)
     }) // aggiunta di content e schema, ora nella parte di risposta viene specificato se 200 cosa torna e che non torna niente altrimenti
     // ora su OpenApiConfig
     @PostMapping

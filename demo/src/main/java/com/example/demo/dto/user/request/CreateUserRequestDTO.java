@@ -49,7 +49,7 @@ public class CreateUserRequestDTO  {
     public long getId(){
         return id;
     }
-    @Schema(nullable = true,example = "468511")
+    @Schema(nullable = true,example = "468464511")
     public String getPhone(){
         return phone;
     }
